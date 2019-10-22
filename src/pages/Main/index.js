@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { FaGitAlt, FaPlus, FaSpinner } from 'react-icons/fa';
+import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
 
 import api from '../../services/api';
 
 import Container from '../../components/Container';
 
-import { Form, SubmitButton, List } from './styles';
+import { Form, SubmitButton, Message, List } from './styles';
 
 class Main extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
 
     this.state = {
       newRepo: '',
       repositories: [],
+      error: null,
+      messageError: '',
       loading: false,
     };
   }
@@ -42,33 +44,43 @@ class Main extends Component {
   handleSubmit = async event => {
     event.preventDefault();
 
-    this.setState({ loading: true });
+    this.setState({ loading: true, error: false });
+    try {
+      const { newRepo, repositories } = this.state;
 
-    const { newRepo, repositories } = this.state;
+      if (newRepo === '') throw new Error('Digite algo');
 
-    const response = await api.get(`/repos/${newRepo}`);
-    const data = {
-      name: response.data.full_name,
-    };
+      const duplicated = repositories.find(repo => repo.name === newRepo);
+      if (duplicated) throw new Error('Repositorio duplicado');
 
-    this.setState({
-      repositories: [...repositories, data],
-      newRepo: '',
-      loading: false,
-    });
+      const response = await api.get(`/repos/${newRepo}`);
+      const data = {
+        name: response.data.full_name,
+      };
+
+      this.setState({
+        repositories: [...repositories, data],
+        newRepo: '',
+        loading: false,
+      });
+    } catch (err) {
+      this.setState({ error: true, messageError: err.message });
+    } finally {
+      this.setState({ loading: false });
+    }
   };
 
   render() {
-    const { repositories, newRepo, loading } = this.state;
+    const { repositories, newRepo, error, messageError, loading } = this.state;
 
     return (
       <Container>
         <h1>
-          <FaGitAlt color="#222" />
+          <FaGithubAlt color="#222" />
           Repositórios
         </h1>
 
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleSubmit} Error={error}>
           <input
             type="text"
             placeholder="Adicionar repositório"
@@ -76,7 +88,7 @@ class Main extends Component {
             onChange={this.handleChange}
           />
 
-          <SubmitButton loading={loading}>
+          <SubmitButton Loading={loading}>
             {loading ? (
               <FaSpinner color="#FFF" size={14} />
             ) : (
@@ -84,6 +96,7 @@ class Main extends Component {
             )}
           </SubmitButton>
         </Form>
+        {error && <Message>{messageError}</Message>}
 
         <List>
           {repositories.map(repository => (

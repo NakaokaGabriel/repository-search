@@ -7,10 +7,11 @@ export const Form = styled.form`
 
   input {
     flex: 1;
-    border: 1px solid #eee;
+    border: 1px solid ${props => (props.Error ? '#ff6b6b' : '#eee')};
     padding: 10px 15px;
     border-radius: 4px;
     font-size: 16px;
+    transition: all 0.3s;
   }
 `;
 
@@ -25,7 +26,7 @@ const rotate = keyframes`
 
 export const SubmitButton = styled.button.attrs(props => ({
   type: 'submit',
-  disabled: props.loading,
+  disabled: props.Loading,
 }))`
   background: #7159c1;
   border: 0;
@@ -43,12 +44,19 @@ export const SubmitButton = styled.button.attrs(props => ({
   }
 
   ${props =>
-    props.loading &&
+    props.Loading &&
     css`
       svg {
         animation: ${rotate} 2s linear infinite;
       }
     `}
+`;
+
+export const Message = styled.p`
+  font-size: 16px;
+  color: #ff6b6b;
+  font-weight: 600;
+  margin-top: 10px;
 `;
 
 export const List = styled.ul`
