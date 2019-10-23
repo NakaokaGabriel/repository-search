@@ -134,3 +134,31 @@ export const IssueFilter = styled.div`
     }
   }
 `;
+
+export const PageActions = styled.div`
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  button {
+    cursor: pointer;
+    background: #7159c1;
+    color: #fff;
+    border: none;
+    padding: 10px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+
+    &[disabled] {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+  }
+
+  span {
+    font-size: 16px;
+    color: #7159c1;
+    font-weight: bold;
+  }
+`;
