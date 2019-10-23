@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import api from '../../services/api';
 
 import Container from '../../components/Container';
-import { Loading, Owner, IssueList, IssueFilter } from './styles';
+import { Loading, Owner, IssueList, IssueFilter, PageActions } from './styles';
 
 export default class Repository extends Component {
   constructor(props) {
@@ -71,6 +71,16 @@ export default class Repository extends Component {
     this.loadIssues();
   };
 
+  handlePage = async action => {
+    const { page } = this.state;
+
+    await this.setState({
+      page: action === 'back' ? page - 1 : page + 1,
+    });
+
+    this.loadIssues();
+  };
+
   render() {
     const {
       repository,
@@ -128,6 +138,19 @@ export default class Repository extends Component {
             </li>
           ))}
         </IssueList>
+        <PageActions>
+          <button
+            type="button"
+            disabled={page < 2}
+            onClick={() => this.handlePage('back')}
+          >
+            Anterior
+          </button>
+          <span>{page}</span>
+          <button type="button" onClick={() => this.handlePage('next')}>
+            Proximo
+          </button>
+        </PageActions>
       </Container>
     );
   }
