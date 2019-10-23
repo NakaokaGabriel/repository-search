@@ -106,3 +106,31 @@ export const IssueList = styled.ul`
     }
   }
 `;
+
+export const IssueFilter = styled.div`
+  margin: 15px 0;
+
+  button {
+    background: transparent;
+    padding: 5px 10px;
+    border: 2px solid #7159c1;
+    color: #7159c1;
+    font-weight: 600;
+    border-radius: 4px;
+    transition: all 0.3s;
+
+    &:nth-child(${props => props.active + 1}) {
+      background: #7159c1;
+      color: #fff;
+    }
+
+    & + button {
+      margin-left: 15px;
+    }
+
+    &:hover {
+      background: #7159c1;
+      color: #fff;
+    }
+  }
+`;
